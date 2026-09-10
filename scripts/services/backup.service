@@ -1,0 +1,12 @@
+[Unit]
+Description=backup service
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/ubuntu/gdrive-file-backup
+ExecStart=/usr/bin/python3 /home/ubuntu/gdrive-file-backup/automate_backup.py
+
+[Install]
+WantedBy=multi-user.target

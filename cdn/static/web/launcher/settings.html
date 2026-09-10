@@ -1,0 +1,69 @@
+{% extends "./layout.html" %}
+{% block content %}
+  <h1><div class="text-shadow">Settings</div></h1>
+  {% if username != "zoffline" %}
+    <h4 class="text-shadow">Logged in as {{ username }}</h4>
+  {% endif %}
+  <div class="row">
+    <div class="col-md-12">
+      <a href="{{ url_for('user_home', username=username) }}" class="btn btn-sm btn-secondary">Back</a>
+      {% if username != "zoffline" %}
+        <a href="{{ url_for('reset', username=username) }}" class="btn btn-sm btn-secondary">Change password</a>
+      {% endif %}
+      <a href="{{ url_for('power_curves', username=username) }}" class="btn btn-sm btn-secondary">Power curves</a>
+      <a href="{{ url_for('profile', username=username) }}" class="btn btn-sm btn-secondary">Zwift</a>
+      <a href="{{ url_for('strava', username=username) }}" class="btn btn-sm btn-secondary">Strava</a>
+      <a href="{{ url_for('intervals', username=username) }}" class="btn btn-sm btn-secondary">Intervals</a>
+      <a href="{{ url_for('trainingpeaks', username=username) }}" class="btn btn-sm btn-secondary">TrainingPeaks</a>
+    </div>
+  </div>
+  {% if files %}
+    <div class="row">
+      <div class="col-sm-8 col-md-6">
+        <form method="POST" action="/download" class="top-buffer">
+          <div class="row">
+            <div class="col-md-12">
+              <select name="filename" class="form-control form-control-sm">
+              {% for file in files %}
+                <option value="{{ file[0] }}">{{ file[0] }} ({{ file[1] }})</option>
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 top-buffer">
+              <input type="submit" value="Download" class="btn btn-sm btn-light">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+  <div class="row">
+    <div class="col-sm-8 col-md-6">
+      <form method="POST" action="/settings/{{ username }}/" enctype="multipart/form-data" class="top-buffer">
+        <div class="row">
+          <div class="col-md-12">
+            <input type="file" name="file" class="form-control-file text-shadow" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 top-buffer">
+            <input type="submit" value="Upload" class="btn btn-sm btn-light"/>
+          </div>
+        </div>
+      </form>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="list-group top-buffer">
+          {% for message in messages %}
+            <li class="list-group-item">
+              <div class="text-shadow">{{ message }}</div>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+{% endblock %}

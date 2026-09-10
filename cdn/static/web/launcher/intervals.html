@@ -1,0 +1,62 @@
+{% extends "./layout.html" %}
+{% block content %}
+  <h1><div class="text-shadow">Intervals.icu</div></h1>
+  {% if username != "zoffline" %}
+    <h4 class="text-shadow">Logged in as {{ username }}</h4>
+  {% endif %}
+  <div class="row">
+    <div class="col-md-12">
+      <a href="{{ url_for('settings', username=username) }}" class="btn btn-sm btn-secondary">Back</a>
+      {% if aid or akey %}
+        <a href="{{ url_for('intervals_sync', username=username) }}" class="btn btn-sm btn-secondary">Sync today's workout</a>
+        <a href="/delete/intervals_credentials.bin" class="btn btn-sm btn-danger">Remove credentials</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-md-5 top-buffer">
+      <form id="intervals" action="{{ url_for('intervals', username=username) }}" method="post">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="col-form-label col-form-label-sm text-shadow">Athlete ID</label>
+            <input type="text" id="athlete_id" name="athlete_id" value="{{ aid }}" class="form-control form-control-sm">
+          </div>
+          <div class="col-md-12">
+            <label class="col-form-label col-form-label-sm text-shadow">API key</label>
+            <input type="text" id="api_key" name="api_key" value="{{ akey }}" class="form-control form-control-sm">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 top-buffer">
+            <input type="submit" value="Submit" class="btn btn-sm btn-light">
+          </div>
+        </div>
+      </form>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="list-group top-buffer">
+          {% for message in messages %}
+            <li class="list-group-item py-2">
+              <div class="text-shadow">{{ message }}</div>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+    {% if sync_status and aid and akey %}
+      <div class="col-sm-8 col-md-6">
+        <ul class="list-group top-buffer">
+          <li class="list-group-item py-2">
+            {% if sync_status.metadata %}
+              <div class="text-shadow">Synced workout: {{ sync_status.metadata.name or sync_status.metadata.filename }}</div>
+            {% else %}
+              <div class="text-shadow">No synced Intervals workout.</div>
+              <div class="text-shadow"><small>Use "Sync today's workout" before launching Zwift.</small></div>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
