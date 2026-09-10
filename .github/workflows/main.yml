@@ -1,34 +1,20 @@
-name: Build EXE
-
+name: Build EXE FIX
 on:
-  workflow_dispatch: # para correres quando quiseres clicando num botão
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: windows-latest
-    
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    
-    - name: Install dependencies
+    - name: Build completo
       run: |
-        python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pyinstaller
-    
-    - name: Build EXE com PyInstaller
-      run: |
-        pyinstaller standalone.spec --clean
-        # se o spec falhar, descomenta a linha de baixo:
-        # pyinstaller --onefile --name zoffline --add-data "cdn;cdn" --add-data "data;data" --add-data "ssl;ssl" --add-data "storage;storage" standalone.py
-    
-    - name: Upload EXE
-      uses: actions/upload-artifact@v4
+        pyinstaller --onedir --name zoffline --add-data "cdn;cdn" --add-data "data;data" --add-data "ssl;ssl" --add-data "storage;storage" --add-data "storage;storage" --hidden-import=google.protobuf standalone.py
+    - uses: actions/upload-artifact@v4
       with:
-        name: zoffline-exe
-        path: dist/
+        name: zoffline-completo
+        path: dist/zoffline
